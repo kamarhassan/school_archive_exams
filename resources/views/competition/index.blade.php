@@ -341,6 +341,56 @@
             background: #5268c9;
             color: white;
         }
+
+        .status-table th:first-child,
+        .status-table td:first-child {
+            position: sticky;
+            right: 0;
+            background: #fff;
+            font-weight: 700;
+            min-width: 110px;
+        }
+
+        .status-cell {
+            min-width: 140px;
+        }
+
+        .status-divisions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .status-tag-uploaded {
+            background: #28a745;
+        }
+
+        .status-tag-missing {
+            background: #dc3545;
+        }
+
+        .status-not-required {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 6px;
+            background: #f1f3f5;
+            color: #777;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -503,39 +553,45 @@
 
 
 
-   <div class="table-container">
-                    <h3>❌ المسابقات المتبقية ({{ $remainingCount }})</h3>
-                    @if (count($notUploaded) > 0)
-                        <div style="overflow-x: auto; max-height: 600px; overflow-y: auto;">
-                            <table>
+                @foreach ($shifts as $shift)
+                    <div class="table-container">
+                        <h3>حالة المسابقات - {{ $shift }} (الأخضر مرفوع، الأحمر ناقص)</h3>
+                        <div style="overflow-x: auto; max-height: 650px; overflow-y: auto;">
+                            <table class="status-table">
                                 <thead>
                                     <tr>
-                                        <th>الدوام</th>
                                         <th>الصف</th>
-                                        <th>المادة</th>
-                                        <th>الشعبة</th>
-                                        <th>الحالة</th>
+                                        @foreach ($subjects as $subject)
+                                            <th>{{ $subject }}</th>
+                                        @endforeach
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($notUploaded as $item)
+                                    @foreach ($grades as $grade)
                                         <tr>
-                                            <td>{{ $item['shift'] }}</td>
-                                            <td>{{ $item['grade'] }}</td>
-                                            <td>{{ $item['subject'] }}</td>
-                                            <td>{{ $item['division'] }}</td>
-                                            <td><span class="badge badge-danger">✗ متبقي</span></td>
+                                            <td>{{ $grade }}</td>
+                                            @foreach ($subjects as $subject)
+                                                <td class="status-cell">
+                                                    @if (!in_array($subject, $availableSubjectsByGrade[$grade] ?? []))
+                                                        <span class="status-not-required">غير مطلوب</span>
+                                                    @else
+                                                        <div class="status-divisions">
+                                                            @foreach ($competitionStatus[$shift][$grade][$subject] ?? [] as $status)
+                                                                <span class="status-tag {{ $status['uploaded'] ? 'status-tag-uploaded' : 'status-tag-missing' }}">
+                                                                    {{ $status['division'] }}
+                                                                </span>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            @endforeach
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
-                    @else
-                        <div class="empty-state">
-                            <p>🎉 تم رفع جميع المسابقات بنجاح!</p>
-                        </div>
-                    @endif
-                </div>
+                    </div>
+                @endforeach
 
 
             </div>

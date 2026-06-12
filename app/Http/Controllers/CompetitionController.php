@@ -13,6 +13,9 @@ class CompetitionController extends Controller
     private $grades = ['اول', 'ثاني', 'ثالث', 'رابع', 'خامس', 'سادس', 'سابع', 'ثامن', 'تاسع'];
     private $subjects = ['عربي', 'انكليزي', 'رياضيات', 'تاريخ', 'جغرافيا', 'تربية', 'علوم', 'فيزياء', 'كيمياء'];
 
+    private $primaryGrades = ['Ø§ÙˆÙ„', 'Ø«Ø§Ù†ÙŠ', 'Ø«Ø§Ù„Ø«', 'Ø±Ø§Ø¨Ø¹', 'Ø®Ø§Ù…Ø³', 'Ø³Ø§Ø¯Ø³'];
+    private $upperGradeOnlySubjects = ['ØªØ§Ø±ÙŠØ®', 'ÙÙŠØ²ÙŠØ§Ø¡', 'ÙƒÙŠÙ…ÙŠØ§Ø¡'];
+
     // Get divisions based on shift and grade
     private function getDivisions($shift, $grade)
     {
@@ -31,6 +34,15 @@ class CompetitionController extends Controller
             return ['أ'];
         }
         return [];
+    }
+
+    private function getSubjects($grade)
+    {
+        if (in_array($grade, $this->primaryGrades)) {
+            return array_values(array_diff($this->subjects, $this->upperGradeOnlySubjects));
+        }
+
+        return $this->subjects;
     }
 
     public function create()
@@ -70,7 +82,7 @@ class CompetitionController extends Controller
         $allCombinations = [];
         foreach ($this->shifts as $shift) {
             foreach ($this->grades as $grade) {
-                foreach ($this->subjects as $subject) {
+                foreach ($this->getSubjects($grade) as $subject) {
                     $divisions = $this->getDivisions($shift, $grade);
                     foreach ($divisions as $division) {
                         $allCombinations[] = [
@@ -107,6 +119,32 @@ class CompetitionController extends Controller
             }
         }
 
+        $competitionStatus = [];
+        foreach ($this->shifts as $shift) {
+            foreach ($this->grades as $grade) {
+                foreach ($this->getSubjects($grade) as $subject) {
+                    foreach ($this->getDivisions($shift, $grade) as $division) {
+                        $isUploaded = false;
+                        foreach ($competitions as $comp) {
+                            $divisions = $comp->divisions ?? [];
+                            if ($comp->shift === $shift &&
+                                $comp->grade === $grade &&
+                                $comp->subject === $subject &&
+                                in_array($division, $divisions)) {
+                                $isUploaded = true;
+                                break;
+                            }
+                        }
+
+                        $competitionStatus[$shift][$grade][$subject][] = [
+                            'division' => $division,
+                            'uploaded' => $isUploaded,
+                        ];
+                    }
+                }
+            }
+        }
+
         $totalCombinations = count($allCombinations);
         $uploadedCount = count($uploaded);
         $remainingCount = count($notUploaded);
@@ -116,6 +154,7 @@ class CompetitionController extends Controller
             'competitions' => $filteredCompetitions,
             'uploaded' => $uploaded,
             'notUploaded' => $notUploaded,
+            'competitionStatus' => $competitionStatus,
             'totalCombinations' => $totalCombinations,
             'uploadedCount' => $uploadedCount,
             'remainingCount' => $remainingCount,
@@ -124,6 +163,7 @@ class CompetitionController extends Controller
             'shifts' => $this->shifts,
             'grades' => $this->grades,
             'subjects' => $this->subjects,
+            'availableSubjectsByGrade' => collect($this->grades)->mapWithKeys(fn ($grade) => [$grade => $this->getSubjects($grade)])->all(),
             'divisions' => ['Ø£', 'Ø¨', 'Ø¬', 'Ø¯'],
         ]);
     }
@@ -157,12 +197,13 @@ class CompetitionController extends Controller
         // Get valid divisions for this shift and grade
         $validDivisions = $this->getDivisions($request->shift, $request->grade);
         $validDivisionsString = implode(',', $validDivisions);
+        $validSubjectsString = implode(',', $this->getSubjects($request->grade));
 
         $request->validate([
             'teacher_name' => 'required|regex:/^[\x{0600}-\x{06FF}\s]+$/u',
             'shift' => 'required|in:صباحي,مسائي',
             'grade' => 'required|in:اول,ثاني,ثالث,رابع,خامس,سادس,سابع,ثامن,تاسع',
-            'subject' => 'required|in:عربي,انكليزي,رياضيات,تاريخ,جغرافيا,تربية,علوم,فيزياء,كيمياء',
+            'subject' => 'required|in:' . $validSubjectsString,
             'divisions' => 'required|array|min:1',
             'divisions.*' => 'required|in:' . $validDivisionsString,
             'competition_file' => 'required|file|mimes:pdf',
