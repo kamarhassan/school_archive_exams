@@ -4,6 +4,11 @@
          display: none;
      }
 
+     /* Modern Checkbox Design */
+     .skin input[type="checkbox"] {
+         display: none;
+     }
+
      .skin label {
          display: inline-block;
          padding: 12px 24px;
@@ -37,6 +42,14 @@
          font-weight: 600;
      }
 
+     .skin input[type="checkbox"]:checked+label {
+         background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+         color: #ffffff;
+         border-color: #2980b9;
+         box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
+         font-weight: 600;
+     }
+
      .skin input[type="radio"]:checked+label::before {
          content: "✓";
          position: absolute;
@@ -47,7 +60,22 @@
          font-weight: bold;
      }
 
+     .skin input[type="checkbox"]:checked+label::before {
+         content: "✓";
+         position: absolute;
+         right: 10px;
+         top: 50%;
+         transform: translateY(-50%);
+         font-size: 18px;
+         font-weight: bold;
+     }
+
      .skin input[type="radio"]:focus+label {
+         outline: 2px solid #3498db;
+         outline-offset: 2px;
+     }
+
+     .skin input[type="checkbox"]:focus+label {
          outline: 2px solid #3498db;
          outline-offset: 2px;
      }
@@ -353,6 +381,40 @@
                          <div class="skin skin-square d-inline-block">
                              <input type="radio" value="كيمياء" name="subject" id="subject_9" required {{ old('subject') === 'كيمياء' ? 'checked' : '' }}>
                              <label for="subject_9">كيمياء</label>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </section>
+     <section class="row">
+         <div class="col-sm-12">
+             <!-- Division -->
+             <div id="division" class="card">
+                 <div class="card-header">
+                     <h5 class="card-title">الشعب(يمكن تحديد اكثر شعبة) <span class="required-star">*</span></h5>
+                 </div>
+                 <div class="card-body">
+                     <div class="controls text-center">
+                         <div class="skin skin-square d-inline-block">
+                             <input type="checkbox" value="أ" name="divisions[]" id="division_1" {{ in_array('أ', old('divisions', [])) ? 'checked' : '' }}>
+                             <label for="division_1">أ</label>
+                         </div>
+                         <div class="skin skin-square d-inline-block">
+                             <input type="checkbox" value="ب" name="divisions[]" id="division_2" {{ in_array('ب', old('divisions', [])) ? 'checked' : '' }}>
+                             <label for="division_2">ب</label>
+                         </div>
+                         <div class="skin skin-square d-inline-block">
+                             <input type="checkbox" value="ج" name="divisions[]" id="division_3" {{ in_array('ج', old('divisions', [])) ? 'checked' : '' }}>
+                             <label for="division_3">ج</label>
+                         </div>
+                         <div class="skin skin-square d-inline-block">
+                             <input type="checkbox" value="د" name="divisions[]" id="division_4" {{ in_array('د', old('divisions', [])) ? 'checked' : '' }}>
+                             <label for="division_4">د</label>
+                         </div>
+                         <div class="skin skin-square d-inline-block">
+                             <input type="checkbox" value="و" name="divisions[]" id="division_5" {{ in_array('و', old('divisions', [])) ? 'checked' : '' }}>
+                             <label for="division_5">و</label>
                          </div>
                      </div>
                  </div>

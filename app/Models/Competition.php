@@ -11,7 +11,12 @@ class Competition extends Model
         'shift',
         'grade',
         'subject',
+        'divisions',
         'competition_file',
         'answer_key_file',
+    ];
+
+    protected $casts = [
+        'divisions' => 'array',
     ];
 }

@@ -19,6 +19,8 @@ class CompetitionController extends Controller
             'shift' => 'required',
             'grade' => 'required',
             'subject' => 'required',
+            'divisions' => 'required|array|min:1',
+            'divisions.*' => 'required|in:أ,ب,ج,د,و',
             'competition_file' => 'required|file|mimes:pdf',
             'answer_key_file' => 'required|file|mimes:pdf',
         ], [
@@ -27,6 +29,10 @@ class CompetitionController extends Controller
             'shift.required' => 'يجب اختيار الدوام',
             'grade.required' => 'يجب اختيار الصف',
             'subject.required' => 'يجب اختيار المادة الدراسية',
+            'divisions.required' => 'يجب اختيار شعبة واحدة على الأقل',
+            'divisions.array' => 'الشعب يجب أن تكون مصفوفة',
+            'divisions.min' => 'يجب اختيار شعبة واحدة على الأقل',
+            'divisions.*.in' => 'الشعبة المختارة غير صحيحة',
             'competition_file.required' => 'يجب رفع ملف المسابقة',
             'competition_file.file' => 'يجب أن يكون ملف المسابقة ملف صحيح',
             'competition_file.mimes' => 'ملف المسابقة يجب أن يكون بصيغة PDF فقط',
@@ -41,17 +47,20 @@ class CompetitionController extends Controller
                 . $request->grade . '/'
                 . $request->subject;
 
+            // إنشاء اسم الشعب من المصفوفة
+            $divisionsString = implode(',', $request->divisions);
+
             $competitionPath = $request->file('competition_file')
                 ->storeAs(
                     $folder,
-                    'المسابقة.' . $request->file('competition_file')->extension(),
+                    'المسابقة شعبة ' . $divisionsString . '.' . $request->file('competition_file')->extension(),
                     'public'
                 );
 
             $answerKeyPath = $request->file('answer_key_file')
                 ->storeAs(
                     $folder,
-                    'الباريم.' . $request->file('answer_key_file')->extension(),
+                    'الباريم شعبة ' . $divisionsString . '.' . $request->file('answer_key_file')->extension(),
                     'public'
                 );
 
@@ -60,6 +69,7 @@ class CompetitionController extends Controller
                 'shift' => $request->shift,
                 'grade' => $request->grade,
                 'subject' => $request->subject,
+                'divisions' => $request->divisions,
                 'competition_file' => $competitionPath,
                 'answer_key_file' => $answerKeyPath,
             ]);
