@@ -137,10 +137,19 @@ class CompetitionController extends Controller
 
         abort_unless(array_key_exists($type, $files), 404);
 
-        $path = $files[$type];
-        abort_unless($path && Storage::disk('public')->exists($path), 404);
+        $path = ltrim((string) $files[$type], '/');
+        abort_unless($path, 404);
 
-        return response()->file(Storage::disk('public')->path($path));
+        if (Storage::disk('public')->exists($path)) {
+            return response()->file(Storage::disk('public')->path($path));
+        }
+
+        $publicStoragePath = public_path('storage/' . $path);
+        if (file_exists($publicStoragePath)) {
+            return response()->file($publicStoragePath);
+        }
+
+        abort(404, 'File not found on server storage.');
     }
 
     public function store(Request $request)
