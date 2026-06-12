@@ -57,6 +57,24 @@
             text-align: center;
         }
 
+        .view-competitions-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .view-competitions-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 60, 0.3);
+        }
+
         @media (max-width: 768px) {
             .brand-text { max-width: 92%; font-size: 16px; }
         }
@@ -84,15 +102,8 @@
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="content-header row">
-
-                <div class="content-header-right text-md-right col-md-6 col-12">
-
-                </div>
+             
             </div>
-
-
-
-
 
             @include('competition.forms')
 

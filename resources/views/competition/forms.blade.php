@@ -259,9 +259,7 @@
          <div class="col-sm-12">
              <!-- Teacher Name -->
              <div id="teacher" class="card">
-                 <div class="card-header">
-                     <h5 class="card-title">اسم المعلم</h5>
-                 </div>
+                
                  <div class="card-body">
                      <div class="form-group">
                          <label for="teacher_name">اسم المعلم <span class="required-star">*</span></label>
@@ -392,30 +390,12 @@
              <!-- Division -->
              <div id="division" class="card">
                  <div class="card-header">
-                     <h5 class="card-title">الشعب(يمكن تحديد اكثر شعبة) <span class="required-star">*</span></h5>
+                     <h5 class="card-title">الشعب (يمكن تحديد أكثر من شعبة) <span class="required-star">*</span></h5>
+                     <small style="display: block; color: #999; margin-top: 8px;">الشعب المتاحة ستتغير حسب الدوام والصف</small>
                  </div>
                  <div class="card-body">
-                     <div class="controls text-center">
-                         <div class="skin skin-square d-inline-block">
-                             <input type="checkbox" value="أ" name="divisions[]" id="division_1" {{ in_array('أ', old('divisions', [])) ? 'checked' : '' }}>
-                             <label for="division_1">أ</label>
-                         </div>
-                         <div class="skin skin-square d-inline-block">
-                             <input type="checkbox" value="ب" name="divisions[]" id="division_2" {{ in_array('ب', old('divisions', [])) ? 'checked' : '' }}>
-                             <label for="division_2">ب</label>
-                         </div>
-                         <div class="skin skin-square d-inline-block">
-                             <input type="checkbox" value="ج" name="divisions[]" id="division_3" {{ in_array('ج', old('divisions', [])) ? 'checked' : '' }}>
-                             <label for="division_3">ج</label>
-                         </div>
-                         <div class="skin skin-square d-inline-block">
-                             <input type="checkbox" value="د" name="divisions[]" id="division_4" {{ in_array('د', old('divisions', [])) ? 'checked' : '' }}>
-                             <label for="division_4">د</label>
-                         </div>
-                         <div class="skin skin-square d-inline-block">
-                             <input type="checkbox" value="و" name="divisions[]" id="division_5" {{ in_array('و', old('divisions', [])) ? 'checked' : '' }}>
-                             <label for="division_5">و</label>
-                         </div>
+                     <div class="controls text-center" id="divisions-container">
+                         <!-- Checkboxes will be dynamically updated by JavaScript -->
                      </div>
                  </div>
              </div>
@@ -458,6 +438,84 @@
          </div>
      </section>
     <button type="submit" class="btn-submit" id="submit-button">رفع</button>
+    <script>
+        // Dynamic divisions based on shift and grade
+        const divisionsMap = {
+            'صباحي': {
+                'اول': ['أ', 'ب', 'ج'],
+                'ثاني': ['أ', 'ب', 'ج'],
+                'ثالث': ['أ', 'ب', 'ج'],
+                'رابع': ['أ', 'ب', 'ج'],
+                'خامس': ['أ', 'ب', 'ج'],
+                'سادس': ['أ', 'ب', 'ج'],
+                'سابع': ['أ', 'ب', 'ج'],
+                'ثامن': ['أ', 'ب', 'ج', 'د'],
+                'تاسع': ['أ', 'ب', 'ج']
+            },
+            'مسائي': {
+                'اول': ['أ', 'ب'],
+                'ثاني': ['أ', 'ب'],
+                'ثالث': ['أ', 'ب'],
+                'رابع': ['أ', 'ب'],
+                'خامس': ['أ'],
+                'سادس': ['أ'],
+                'سابع': ['أ'],
+                'ثامن': ['أ'],
+                'تاسع': ['أ']
+            }
+        };
+
+        function updateDivisions() {
+            const shift = document.querySelector('input[name="shift"]:checked');
+            const grade = document.querySelector('input[name="grade"]:checked');
+            const container = document.getElementById('divisions-container');
+            const oldSelected = Array.from(document.querySelectorAll('input[name="divisions[]"]:checked')).map(el => el.value);
+
+            if (!shift || !grade) {
+                container.innerHTML = '<p style="color: #999; font-size: 14px;">اختر الدوام والصف أولاً</p>';
+                return;
+            }
+
+            const shiftValue = shift.value;
+            const gradeValue = grade.value;
+            const divisions = divisionsMap[shiftValue] && divisionsMap[shiftValue][gradeValue] ? divisionsMap[shiftValue][gradeValue] : [];
+
+            container.innerHTML = '';
+
+            if (divisions.length === 0) {
+                container.innerHTML = '<p style="color: #999; font-size: 14px;">لا توجد شعب متاحة</p>';
+                return;
+            }
+
+            divisions.forEach((div, index) => {
+                const isChecked = oldSelected.includes(div);
+                const divElement = document.createElement('div');
+                divElement.className = 'skin skin-square d-inline-block';
+                divElement.innerHTML = `
+                    <input type="checkbox" value="${div}" name="divisions[]" id="division_${index}" ${isChecked ? 'checked' : ''}>
+                    <label for="division_${index}">${div}</label>
+                `;
+                container.appendChild(divElement);
+            });
+        }
+
+        // Listen for changes in shift and grade
+        document.addEventListener('DOMContentLoaded', function() {
+            const shiftInputs = document.querySelectorAll('input[name="shift"]');
+            const gradeInputs = document.querySelectorAll('input[name="grade"]');
+
+            shiftInputs.forEach(input => {
+                input.addEventListener('change', updateDivisions);
+            });
+
+            gradeInputs.forEach(input => {
+                input.addEventListener('change', updateDivisions);
+            });
+
+            // Initial call
+            updateDivisions();
+        });
+    </script>
     <script>
         (function(){
             document.addEventListener('DOMContentLoaded', function(){
