@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Competition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CompetitionController extends Controller
 {
@@ -37,9 +38,33 @@ class CompetitionController extends Controller
         return view('competition.create');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $filters = [
+            'shift' => $request->query('shift'),
+            'grade' => $request->query('grade'),
+            'subject' => $request->query('subject'),
+            'division' => $request->query('division'),
+        ];
+
+        $filters['shift'] = in_array($filters['shift'], $this->shifts) ? $filters['shift'] : null;
+        $filters['grade'] = in_array($filters['grade'], $this->grades) ? $filters['grade'] : null;
+        $filters['subject'] = in_array($filters['subject'], $this->subjects) ? $filters['subject'] : null;
+        $filters['division'] = in_array($filters['division'], ['Ø£', 'Ø¨', 'Ø¬', 'Ø¯']) ? $filters['division'] : null;
+
         $competitions = Competition::all();
+
+        $filteredCompetitions = Competition::query()
+            ->when($filters['shift'], fn ($query, $shift) => $query->where('shift', $shift))
+            ->when($filters['grade'], fn ($query, $grade) => $query->where('grade', $grade))
+            ->when($filters['subject'], fn ($query, $subject) => $query->where('subject', $subject))
+            ->latest()
+            ->get()
+            ->when($filters['division'], function ($items, $division) {
+                return $items->filter(function ($competition) use ($division) {
+                    return in_array($division, $competition->divisions ?? []);
+                })->values();
+            });
 
         // Create a matrix of all possible combinations
         $allCombinations = [];
@@ -85,17 +110,37 @@ class CompetitionController extends Controller
         $totalCombinations = count($allCombinations);
         $uploadedCount = count($uploaded);
         $remainingCount = count($notUploaded);
-        $progress = ($uploadedCount / $totalCombinations) * 100;
+        $progress = $totalCombinations > 0 ? ($uploadedCount / $totalCombinations) * 100 : 0;
 
         return view('competition.index', [
-            'competitions' => $competitions,
+            'competitions' => $filteredCompetitions,
             'uploaded' => $uploaded,
             'notUploaded' => $notUploaded,
             'totalCombinations' => $totalCombinations,
             'uploadedCount' => $uploadedCount,
             'remainingCount' => $remainingCount,
             'progress' => $progress,
+            'filters' => $filters,
+            'shifts' => $this->shifts,
+            'grades' => $this->grades,
+            'subjects' => $this->subjects,
+            'divisions' => ['Ø£', 'Ø¨', 'Ø¬', 'Ø¯'],
         ]);
+    }
+
+    public function viewFile(Competition $competition, string $type)
+    {
+        $files = [
+            'competition' => $competition->competition_file,
+            'answer-key' => $competition->answer_key_file,
+        ];
+
+        abort_unless(array_key_exists($type, $files), 404);
+
+        $path = $files[$type];
+        abort_unless($path && Storage::disk('public')->exists($path), 404);
+
+        return response()->file(Storage::disk('public')->path($path));
     }
 
     public function store(Request $request)
