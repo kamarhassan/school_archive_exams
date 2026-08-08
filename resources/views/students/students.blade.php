@@ -67,6 +67,8 @@
         </div>
     </nav>
 
+    <div style="height: 8px; background: linear-gradient(90deg, #2c7be5, #5aa8ff); margin-top: 56px;"></div>
+
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="registry">
@@ -77,7 +79,7 @@
                 <div class="registry__search">
                     <label for="student_id">بحث اسم التلميذ / رقم التلميذ (id)</label>
                     <select id="student_id" name="student_id">
-                        <option value="">-- اختر التلميذ --</option>
+                        <option value="">-- اكتب اسم  التلميذ --</option>
                         @foreach ($students as $student)
                             <option value="{{ $student->id }}">
                                 #{{ $student->id }} - {{ $student->first_name_ar }} {{ $student->father_name_ar }} {{ $student->family_name_ar }} 
@@ -197,7 +199,7 @@
                 }
             });
 
-            $('#student_id').select2({ placeholder: '-- اختر التلميذ --', allowClear: true, dir: 'rtl' });
+            $('#student_id').select2({ placeholder: '--اختر اسم التلميذ بكتابة الاسم--', allowClear: true, dir: 'rtl' });
 
             const fields = [
                 'unified_number', 'contact_id', 'first_name_ar', 'first_name_en',
