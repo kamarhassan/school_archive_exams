@@ -61,7 +61,7 @@
         <div class="navbar-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center;">
             <li class="nav-item" style="list-style: none; margin: 0;">
                 <a class="navbar-brand" style="display: flex; justify-content: center; align-items: center; width: 100%; margin: 0;">
-                    <h3 class="brand-text" style="margin: 0; text-align: center;">متوسطة سحمر الأولى الرسمية - عرض المسابقات</h3>
+                    <h3 class="brand-text" style="margin: 0; text-align: center;">متوسطة سحمر الأولى الرسمية </h3>
                 </a>
             </li>
         </div>
