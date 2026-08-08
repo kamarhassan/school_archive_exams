@@ -170,7 +170,7 @@
                     <div class="registry__card registry__card--status">
                         <h2>الحالة والإجراءات</h2>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label><input type="checkbox" id="is_enable" name="is_enable" value="1"> الملف مفعّل</label>
+                            {{-- <label><input type="checkbox" id="is_enable" name="is_enable" value="1"> الملف مفعّل</label> --}}
                             <button type="submit" class="btn-save">حفظ البيانات</button>
                         </div>
                     </div>
