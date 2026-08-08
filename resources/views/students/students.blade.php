@@ -102,9 +102,9 @@
                         <h2>بيانات التلميذ الأساسية</h2>
                         <div class="registry__grid">
                             <div class="registry__field"><label>الاسم الأول (عربي) *</label><input type="text" id="first_name_ar" name="first_name_ar" readonly required></div>
-                            <div class="registry__field"><label>الاسم الأول (إنكليزي) *</label><input type="text" id="first_name_en" name="first_name_en" required></div>
+                            <div class="registry__field"><label>الاسم الأول (إنكليزي) *</label><input type="text" id="first_name_en" name="first_name_en" required pattern="[A-Za-z\s'-]+" title="يرجى إدخال حروف إنجليزية فقط"></div>
                             <div class="registry__field"><label>الشهرة (عربي) *</label><input type="text" id="family_name_ar" name="family_name_ar" readonly required></div>
-                            <div class="registry__field"><label>الشهرة (إنكليزي) *</label><input type="text" id="last_name_en" name="last_name_en" required></div>
+                            <div class="registry__field"><label>الشهرة (إنكليزي) *</label><input type="text" id="last_name_en" name="last_name_en" required pattern="[A-Za-z\s'-]+" title="يرجى إدخال حروف إنجليزية فقط"></div>
                             <div class="registry__field"><label>الصف السابق *</label><input type="text" id="previous_grade" name="previous_grade" readonly required></div>
                             <div class="registry__field"><label>تاريخ الولادة *</label><input type="date" id="date_of_birth" name="date_of_birth" readonly required></div>
                             <div class="registry__field"><label>مكان الولادة *</label><input type="text" id="place_of_birth" name="place_of_birth" readonly required></div>
@@ -129,7 +129,7 @@
                         <h2>بيانات الأب وولي الأمر</h2>
                         <div class="registry__grid">
                             <div class="registry__field"><label>اسم الأب (عربي) *</label><input type="text" id="father_name_ar" name="father_name_ar" required></div>
-                            <div class="registry__field"><label>اسم الأب (إنكليزي) *</label><input type="text" id="father_name_en" name="father_name_en" required></div>
+                            <div class="registry__field"><label>اسم الأب (إنكليزي) *</label><input type="text" id="father_name_en" name="father_name_en" required pattern="[A-Za-z\s'-]+" title="يرجى إدخال حروف إنجليزية فقط"></div>
                             <div class="registry__field"><label>رقم هاتف ولي الأمر *</label><input type="text" id="guardian_phone" name="guardian_phone" required></div>
                             <div class="registry__field">
                                 <label>قطاع عمل الأب *</label>
@@ -150,9 +150,9 @@
                         <h2>بيانات الأم</h2>
                         <div class="registry__grid">
                             <div class="registry__field"><label>اسم الأم الأول (عربي) *</label><input type="text" id="mother_first_name_ar" name="mother_first_name_ar" required></div>
-                            <div class="registry__field"><label>اسم الأم (إنكليزي) *</label><input type="text" id="mother_name_en" name="mother_name_en" required></div>
+                            <div class="registry__field"><label>اسم الأم (إنكليزي) *</label><input type="text" id="mother_name_en" name="mother_name_en" required pattern="[A-Za-z\s'-]+" title="يرجى إدخال حروف إنجليزية فقط"></div>
                             <div class="registry__field"><label>عائلة الأم (عربي) *</label><input type="text" id="mother_family_name_ar" name="mother_family_name_ar" required></div>
-                            <div class="registry__field"><label>عائلة الأم (إنكليزي) *</label><input type="text" id="mother_family_name_en" name="mother_family_name_en" required></div>
+                            <div class="registry__field"><label>عائلة الأم (إنكليزي) *</label><input type="text" id="mother_family_name_en" name="mother_family_name_en" required pattern="[A-Za-z\s'-]+" title="يرجى إدخال حروف إنجليزية فقط"></div>
                             <div class="registry__field">
                                 <label>قطاع عمل الأم *</label>
                                 <select id="mother_work_sector" name="mother_work_sector" required>
