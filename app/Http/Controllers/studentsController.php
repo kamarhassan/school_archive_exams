@@ -55,7 +55,7 @@ class studentsController extends Controller
     $student = StudentOld::findOrFail($id);
 
     // تحويل قيمة is_enable (إذا كانت المرسلة 1 تصبح 0)
-    $validated['is_enable'] = $request->input('is_enable') == '1' ? 0 : 1;
+    $validated['is_enable'] = 0;
 
     $student->update($validated);
 

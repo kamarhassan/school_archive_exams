@@ -119,7 +119,7 @@
                                 </select>
                             </div>
                             <div class="registry__field"><label>رقم وثيقة التعريف/السجل *</label><input type="text" id="id_card_number" name="id_card_number" required></div>
-                            <div class="registry__field"><label>مكان الإقامة *</label><input type="text" id="contact_location" name="contact_location" required></div>
+                            <div class="registry__field"><label>مكان السجل *</label><input type="text" id="contact_location" name="contact_location" required></div>
                             <div class="registry__field"><label>الجنسية *</label><input type="text" id="nationality" name="nationality" required></div>
                         </div>
                     </div>
